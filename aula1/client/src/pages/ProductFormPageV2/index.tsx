@@ -24,7 +24,7 @@ export function ProductFormPageV2() {
   const [apiError, setApiError] = useState("");
   const navigate = useNavigate();
   const { id } = useParams();
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
   const [entity, setEntity] = useState<IProduct>({
     id: undefined,
     name: "",
@@ -33,44 +33,53 @@ export function ProductFormPageV2() {
     category: { id: undefined, name: "" },
   });
 
+  // Executa ao carregar o componente
   useEffect(() => {
-    CategoryService.findAll()
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    // Busca a lista de categorias
+    await CategoryService.findAll()
       .then((response) => {
+        // caso sucesso, adiciona a lista no state
         setCategories(response.data);
-        if (id) {
-          ProductService.findOne(parseInt(id))
-            .then((response) => {
-              if (response.data) {
-                console.log(response.data);
-                setEntity({
-                  id: response.data.id,
-                  name: response.data.name,
-                  price: response.data.price,
-                  description: response.data.description,
-                  category: response.data.category.id,
-                });
-                setApiError("");
-              } else {
-                setApiError("Falha ao carregar o produto.");
-              }
-            })
-            .catch((error) => {
-              setApiError("Falha ao carregar o produto.");
-            });
-        } else {
-          setEntity((previousEntity) => {
-            return {
-              ...previousEntity,
-              category: response.data[0]?.id,
-            };
-          });
-        }
         setApiError("");
       })
-      .catch((error) => {
-        setApiError("Falha ao carregar a lista de categorias.");
+      .catch((erro) => {
+        setApiError("Falha ao carregar a combo de categorias.");
       });
-  }, [id]);
+    if (id) {
+      // ao editar um produto, busca ele no back-end e carrega no objeto form que está no state.
+      ProductService.findOne(parseInt(id))
+        .then((response) => {
+          if (response.data) {
+            console.log(response.data);
+            setEntity({
+              id: response.data.id,
+              name: response.data.name,
+              price: response.data.price,
+              description: response.data.description,
+              category: { id: response.data.category.id, name: "" },
+            });
+            setApiError("");
+          } else {
+            setApiError("Falha ao carregar o produto.");
+          }
+        })
+        .catch((error) => {
+          setApiError("Falha ao carregar o produto.");
+        });
+    } else {
+      // ao cadastrar um novo produto, valoriza no objeto form a primeira categoria do select
+      setEntity((previousEntity) => {
+        return {
+          ...previousEntity,
+          category: { id: categories[0].id, name: "" },
+        };
+      });
+    }
+  };
 
   useEffect(() => {
     reset(entity);

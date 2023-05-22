@@ -13,7 +13,7 @@ export function ProductFormPage() {
     name: "",
     price: 0,
     description: "",
-    category: { id: undefined, name: '' },
+    category: { id: undefined, name: "" },
   });
   // o objeto erros armazena o array de erros retornado pelo backend ao tentar cadastrar um produto com dados inválidos nos atributos.
   const [errors, setErrors] = useState({
@@ -34,46 +34,55 @@ export function ProductFormPage() {
 
   // Executa ao carregar o componente
   useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
     // Busca a lista de categorias
-    CategoryService.findAll()
-      .then((response) => { // caso sucesso, adiciona a lista no state
+    await CategoryService.findAll()
+      .then((response) => {
+        // caso sucesso, adiciona a lista no state
         setCategories(response.data);
-        if (id) { // ao editar um produto, busca ele no back-end e carrega no objeto form que está no state.
-          ProductService.findOne(parseInt(id))
-            .then((response) => {
-              if (response.data) {
-                setForm({
-                  id: response.data.id,
-                  name: response.data.name,
-                  price: response.data.price,
-                  description: response.data.description,
-                  category: { id: response.data.category.id, name: '' },
-                });
-                setApiError("");
-              } else {
-                setApiError("Falha ao carregar o produto");
-              }
-            })
-            .catch((erro) => {
-              setApiError("Falha ao carregar o produto");
-            });
-        } else { // ao cadastrar um novo produto, valoriza no objeto form a primeira categoria do select
-          setForm((previousForm) => {
-            return {
-              ...previousForm,
-              category: { id: response.data[0].id, name: '' },
-            };
-          });
-        }
         setApiError("");
       })
       .catch((erro) => {
         setApiError("Falha ao carregar a combo de categorias.");
       });
-  }, []);
+    if (id) {
+      // ao editar um produto, busca ele no back-end e carrega no objeto form que está no state.
+      ProductService.findOne(parseInt(id))
+        .then((response) => {
+          if (response.data) {
+            setForm({
+              id: response.data.id,
+              name: response.data.name,
+              price: response.data.price,
+              description: response.data.description,
+              category: { id: response.data.category.id, name: "" },
+            });
+            setApiError("");
+          } else {
+            setApiError("Falha ao carregar o produto");
+          }
+        })
+        .catch((erro) => {
+          setApiError("Falha ao carregar o produto");
+        });
+    } else {
+      // ao cadastrar um novo produto, valoriza no objeto form a primeira categoria do select
+      setForm((previousForm) => {
+        return {
+          ...previousForm,
+          category: { id: categories[0].id, name: "" },
+        };
+      });
+    }
+  };
 
   //Função utilizada para controlar as alterações nos Inputs e TextArea
-  const onChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const onChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { value, name } = event.target;
     setForm((previousForm) => {
       return {
@@ -201,7 +210,9 @@ export function ProductFormPage() {
         />
       </div>
       <div className="text-center">
-        <Link to="/products" className="nav nav-link">Voltar</Link>
+        <Link to="/products" className="nav nav-link">
+          Voltar
+        </Link>
       </div>
     </div>
   );
