@@ -1,29 +1,23 @@
 package br.edu.utfpr.pb.pw25s.server.dto;
 
-import lombok.*;
+import lombok.Data;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(of = {"id"})
-@Builder
-public class ProductDto {
+public class ProductDTO {
 
     private Long id;
 
     @NotNull
-    @Size(min = 2, max = 100)
     private String name;
 
     @NotNull
-    @Size(min = 2, max = 1024)
     private String description;
 
-    private Double price;
+    @NotNull
+    private BigDecimal price;
 
-    private CategoryDto category;
-
+    private CategoryDTO category;
 }

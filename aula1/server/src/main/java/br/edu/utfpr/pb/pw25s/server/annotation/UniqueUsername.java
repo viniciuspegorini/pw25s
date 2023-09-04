@@ -1,7 +1,9 @@
-package br.edu.utfpr.pb.pw25s.server.validation;
+package br.edu.utfpr.pb.pw25s.server.annotation;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
+import br.edu.utfpr.pb.pw25s.server.validation.UniqueUsernameValidator;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -11,7 +13,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UniqueUsername {
-    String message() default "{br.edu.utfpr.pb.pw25s.username.Unique}";
+    String message() default "{br.edu.utfpr.pb.pw26s.server.user.username.constraints.UniquyeUsername.message}";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

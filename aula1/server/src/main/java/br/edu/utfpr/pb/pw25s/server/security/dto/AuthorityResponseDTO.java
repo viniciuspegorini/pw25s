@@ -1,4 +1,4 @@
-package br.edu.utfpr.pb.pw25s.server.security;
+package br.edu.utfpr.pb.pw25s.server.security.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AuthenticationResponse {
+public class AuthorityResponseDTO {
 
-    private String token;
+    private String authority;
 
 }

@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CategoryServiceImpl extends CrudServiceImpl<Category, Long>
-        implements CategoryService {
+        implements CategoryService{
 
-    private CategoryRepository categoryRepository;
+    private static CategoryRepository categoryRepository;
 
     public CategoryServiceImpl(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
@@ -18,7 +18,6 @@ public class CategoryServiceImpl extends CrudServiceImpl<Category, Long>
 
     @Override
     protected JpaRepository<Category, Long> getRepository() {
-        return this.categoryRepository;
+        return categoryRepository;
     }
-
 }

@@ -1,44 +1,38 @@
 package br.edu.utfpr.pb.pw25s.server.controller;
 
-import br.edu.utfpr.pb.pw25s.server.error.ApiError;
+import br.edu.utfpr.pb.pw25s.server.dto.UserDTO;
 import br.edu.utfpr.pb.pw25s.server.model.User;
 import br.edu.utfpr.pb.pw25s.server.service.UserService;
-import br.edu.utfpr.pb.pw25s.server.utils.GenericResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
+import br.edu.utfpr.pb.pw25s.server.shared.GenericResponse;
+import org.modelmapper.ModelMapper;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("users")
 public class UserController {
-    private final UserService userService;
 
-    public UserController(UserService userService) {
+    private final UserService userService;
+    private final ModelMapper modelMapper;
+
+    public UserController(UserService userService,
+                          ModelMapper modelMapper) {
         this.userService = userService;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping
-    GenericResponse createUser(@RequestBody @Valid User user) {
-        userService.save(user);
-        return new GenericResponse("Registro salvo");
-    }
+    public GenericResponse createUser(@Valid @RequestBody UserDTO user) {
+        User userEntity = modelMapper.map(user, User.class);
+        userService.save(userEntity);
 
-    @PatchMapping
-    GenericResponse createUserPatch(@RequestBody @Valid User user) {
-        userService.save(user);
-        return new GenericResponse("Registro salvo");
-    }
-
-    @GetMapping
-    String getString() {
-        return "O usuário está autenticado!";
+        GenericResponse genericResponse = new GenericResponse();
+        genericResponse.setMessage("User saved.");
+        return genericResponse;
     }
 
 }

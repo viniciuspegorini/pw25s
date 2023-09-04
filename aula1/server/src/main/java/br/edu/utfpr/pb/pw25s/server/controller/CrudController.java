@@ -9,101 +9,96 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
+// T = class type, D = dto type, ID = attribute related to primary key type
+public abstract class CrudController <T, D, ID extends Serializable> {
 
-public abstract class CrudController<T, D, ID extends Serializable>{
-	
-	protected abstract CrudService<T, ID> getService();
-	protected abstract ModelMapper getModelMapper();
-	private final Class<T> typeClass;
-	private final Class<D> typeDtoClass;
+    protected abstract CrudService<T, ID> getService();
+    protected abstract ModelMapper getModelMapper();
 
-	public CrudController(Class<T> typeClass, Class<D> typeDtoClass) {
-		this.typeClass = typeClass;
-		this.typeDtoClass = typeDtoClass;
-	}
+    private final Class<T> typeClass;
+    private final Class<D> typeDtoClass;
 
-	@GetMapping // https://localhost/categories.. /products... etc
-	public ResponseEntity<List<D>> findAll() {
-		return ResponseEntity.ok(getService().findAll().stream()
-				.map(this::convertToDto)
-				.collect(Collectors.toList()));
-	}
-	@GetMapping("page") // https://localhost/categories?page=1&size=10&order=name&asc=true
-	public ResponseEntity<Page<D>> findAll(@RequestParam int page,
-													 @RequestParam int size,
-													 @RequestParam(required = false) String order,
-													 @RequestParam(required = false) Boolean asc) {
+    public CrudController(Class<T> typeClass, Class<D> typeDtoClass) {
+        this.typeClass = typeClass;
+        this.typeDtoClass = typeDtoClass;
+    }
 
-		PageRequest pageRequest = PageRequest.of(page, size);
-		if (order != null && asc != null) {
-			pageRequest = PageRequest.of(page, size,
-					asc ? Sort.Direction.ASC : Sort.Direction.DESC, order);
-		}
-		return ResponseEntity.ok(getService().findAll(pageRequest).map(this::convertToDto));
-	}
+    private D convertToDto(T entity) {
+        return getModelMapper().map(entity, this.typeDtoClass);
+    }
 
-	@GetMapping("{id}") // https://localhost/categories/1
-	public ResponseEntity<D> findOne(@PathVariable ID id) {
-		T entity = getService().findOne(id);
-		if (entity != null) {
-			return ResponseEntity.ok(convertToDto(getService().findOne(id)));
-		} else {
-			return ResponseEntity.noContent().build();
-		}
-	}
+    private T convertToEntity(D entityDto) {
+        return getModelMapper().map(entityDto, this.typeClass);
+    }
 
-	@PostMapping
-	public ResponseEntity<D> create(@RequestBody @Valid D entity) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(
-				convertToDto(getService().save( convertToEntity(entity) )));
-	}
+    @GetMapping //http://ip.api:port/classname
+    public ResponseEntity<List<D>> findAll() {
+        return ResponseEntity.ok(
+                getService().findAll().stream().map(
+                        this::convertToDto).collect(Collectors.toList()
+                )
+        );
+    }
 
-	@PutMapping("{id}")
-	public ResponseEntity<D> update(@PathVariable ID id, @RequestBody @Valid D entity) {
-		return ResponseEntity.ok(convertToDto( getService().save( convertToEntity(entity) ) ) );
-	}
+    @GetMapping("page")  //http://ip.api:port/classname/page
+    public ResponseEntity<Page<D>> findAll(
+                        @RequestParam int page,
+                        @RequestParam int size,
+                        @RequestParam(required = false) String order,
+                        @RequestParam(required = false) Boolean asc
+                    ) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        if (order != null && asc != null) {
+            pageRequest = PageRequest.of(page, size,
+                    asc ? Sort.Direction.ASC : Sort.Direction.DESC, order);
+        }
+        return ResponseEntity.ok(
+                getService().findAll(pageRequest).map(this::convertToDto)
+        );
+    }
 
-	@GetMapping("exists/{id}")
-	public ResponseEntity<Boolean> exists(@PathVariable ID id) {
-		return ResponseEntity.ok(getService().exists(id));
-	}
+    @GetMapping("{id}")
+    public ResponseEntity<D> findOne(@PathVariable ID id) {
+        T entity = getService().findOne(id);
+        if ( entity != null) {
+            return ResponseEntity.ok(convertToDto(entity));
+        } else {
+            return ResponseEntity.noContent().build();
+        }
+    }
 
-	@GetMapping("count")
-	public ResponseEntity<Long> count() {
-		return ResponseEntity.ok(getService().count());
-	}
+    @PostMapping
+    public ResponseEntity<D> create(@RequestBody @Valid D entity) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(convertToDto(getService().save(convertToEntity(entity))));
 
-	@DeleteMapping("{id}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> delete(@PathVariable ID id) {
-		getService().delete(id);
-		return ResponseEntity.noContent().build();
-	}
+    }
 
-	private D convertToDto(T entity) {
-		return getModelMapper().map(entity, this.typeDtoClass);
-	}
+    @PutMapping("{id}")
+    public ResponseEntity<D> update(@PathVariable ID id, @RequestBody @Valid D entity) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(convertToDto(getService().save(convertToEntity(entity))));
 
-	private T convertToEntity(D entityDto) {
-		return getModelMapper().map(entityDto, this.typeClass);
-	}
+    }
+
+    @GetMapping("exists/{id}")
+    public ResponseEntity<Boolean> exists(@PathVariable ID id) {
+        return ResponseEntity.ok(getService().exists(id));
+    }
+
+    @GetMapping("count")
+    public ResponseEntity<Long> count() {
+        return ResponseEntity.ok(getService().count());
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> delete(@PathVariable ID id) {
+        getService().delete(id);
+        return ResponseEntity.noContent().build();
+    }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

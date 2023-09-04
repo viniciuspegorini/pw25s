@@ -1,37 +1,39 @@
 package br.edu.utfpr.pb.pw25s.server.dto;
 
-import br.edu.utfpr.pb.pw25s.server.validation.UniqueUsername;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import br.edu.utfpr.pb.pw25s.server.annotation.UniqueUsername;
+import br.edu.utfpr.pb.pw25s.server.model.User;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-import java.util.Collection;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Data
-public class UserDto {
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserDTO {
 
-    private long id;
+    private Long id;
 
     @UniqueUsername
-    @NotNull(message = "{br.edu.utfpr.pb.pw25s.username}")
-    @Size(min = 4, max = 255)
+    @NotNull
+    @Size(min = 4, max = 50)
     private String username;
 
     @NotNull
+    @Size(min = 4, max = 50)
     private String displayName;
 
-    @NotNull
-    @Size(min = 6, max = 254)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$")
+    @NotNull(message = "{br.edu.utfpr.pb.pw26s.server.user.password.constraints.NotNull.message}")
+    @Size(min = 6)
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message = "{br.edu.utfpr.pb.pw26s.server.user.password.constraints.Pattern.message}")
     private String password;
 
+    public UserDTO(User user) {
+        this.id = user.getId();
+        this.displayName = user.getDisplayName();
+        this.username = user.getUsername();
+    }
 }
