@@ -1,6 +1,6 @@
 package br.edu.utfpr.pb.pw25s.server.controller;
 
-import br.edu.utfpr.pb.pw25s.server.service.CrudService;
+import br.edu.utfpr.pb.pw25s.server.service.ICrudService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 // T = class type, D = dto type, ID = attribute related to primary key type
 public abstract class CrudController <T, D, ID extends Serializable> {
 
-    protected abstract CrudService<T, ID> getService();
+    protected abstract ICrudService<T, ID> getService();
     protected abstract ModelMapper getModelMapper();
 
     private final Class<T> typeClass;

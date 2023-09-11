@@ -1,6 +1,6 @@
 package br.edu.utfpr.pb.pw25s.server.security.dto;
 
-import br.edu.utfpr.pb.pw26s.server.model.User;
+import br.edu.utfpr.pb.pw25s.server.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

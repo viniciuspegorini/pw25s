@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
 import java.io.Serializable;
 import java.util.List;
 
-public interface CrudService<T, ID extends Serializable> {
+public interface ICrudService<T, ID extends Serializable> {
 
     List<T> findAll();
 

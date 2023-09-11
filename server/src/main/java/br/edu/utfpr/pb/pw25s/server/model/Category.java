@@ -12,17 +12,16 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter @Setter
 public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter @Setter
     private Long id;
 
     @NotNull
     @Size(min = 2, max = 50)
     @Column(length = 50, nullable = false)
-    @Getter @Setter
     private String name;
 
     @Override

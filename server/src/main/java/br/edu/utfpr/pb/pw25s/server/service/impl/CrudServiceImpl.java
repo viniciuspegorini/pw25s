@@ -1,6 +1,6 @@
 package br.edu.utfpr.pb.pw25s.server.service.impl;
 
-import br.edu.utfpr.pb.pw25s.server.service.CrudService;
+import br.edu.utfpr.pb.pw25s.server.service.ICrudService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
 import java.util.List;
 
-public abstract class CrudServiceImpl <T, ID extends Serializable>
-        implements CrudService<T, ID> {
+public abstract class CrudServiceImpl<T, ID extends Serializable>
+        implements ICrudService<T, ID> {
 
     protected abstract JpaRepository<T, ID> getRepository();
 
