@@ -1,6 +1,8 @@
 server:
   port: 8025
 spring:
+  profiles:
+    active: dev-postgres
   jpa:
     properties:
       javax:
@@ -10,3 +12,22 @@ spring:
       hibernate:
         format_sql: false
     show-sql: true
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:pw26s-dev
+---
+spring:
+  config:
+    activate:
+      on-profile: dev-postgres
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/pw25s
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
