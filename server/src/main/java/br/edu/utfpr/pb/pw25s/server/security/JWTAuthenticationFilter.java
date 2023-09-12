@@ -94,7 +94,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 )
                 //Por fim é informado o algoritmo utilizado para assinar o token e por parâmetro a chave utilizada para assinatura. O Secret também pode ser alterado na classe SecurityConstants que armazena alguns dados de configuração do Spring Security
                 .sign(Algorithm.HMAC512(SecurityConstants.SECRET));
+
         response.setContentType("application/json");
+
         response.getWriter().write(
                 new ObjectMapper().writeValueAsString(
                         new AuthenticationResponse(token, new UserResponseDTO(user)))
