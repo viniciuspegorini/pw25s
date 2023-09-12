@@ -65,6 +65,7 @@ public class WebSecurity {
                 .requestMatchers(antMatcher(HttpMethod.POST, "/users/**")).permitAll()
                 //permite que a rota "/error" seja acessada por qualquer requisição mesmo o usuário não estando autenticado
                 .requestMatchers(antMatcher("/error/**")).permitAll()
+                //permite que a rota "/h2-console" seja acessada por qualquer requisição mesmo o usuário não estando autenticado
                 .requestMatchers(antMatcher("/h2-console/**")).permitAll()
                 //as demais rotas da aplicação só podem ser acessadas se o usuário estiver autenticado
                 .anyRequest().authenticated()
@@ -86,12 +87,19 @@ public class WebSecurity {
         return new BCryptPasswordEncoder();
     }
 
-    // Configuração de CORS para ser possível acessar a API criada do cliente que será desenvolvido em React
+    /*
+        O compartilhamento de recursos de origem cruzada (CORS) é um mecanismo para integração de aplicativos.
+        O CORS define uma maneira de os aplicativos Web clientes carregados em um domínio interagirem com recursos em um domínio diferente.
+    */
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        // Lista das origens autorizadas, no nosso caso que iremos rodar a aplicação localmente o * poderia ser trocado
+        // por: http://localhost:porta, em que :porta será a porta em que a aplicação cliente será executada
         configuration.setAllowedOrigins(List.of("*"));
+        // Lista dos métodos HTTP autorizados
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT"));
+        // Lista dos Headers autorizados, o Authorization será o header que iremos utilizar para transferir o Token
         configuration.setAllowedHeaders(List.of("Authorization","x-xsrf-token",
                 "Access-Control-Allow-Headers", "Origin",
                 "Accept", "X-Requested-With", "Content-Type",
