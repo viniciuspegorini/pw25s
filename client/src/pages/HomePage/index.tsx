@@ -1,10 +1,11 @@
-
-
 export function HomePage() {
-
-    return (
-        <div className="container">
-            <h1>Bem vindo!</h1>
+  return (
+    <>
+      <main className="container">
+        <div className="text-center">
+          <h1 className="h3 mb-3 fw-normal">HOME PAGE</h1>
         </div>
-    )
+      </main>
+    </>
+  );
 }

@@ -74,36 +74,41 @@ export function CategoryFormPage() {
   };
 
   return (
-    <div className="container">
-      <h1 className="text-center">Cadastro de Categoria</h1>
+    <>
+      <main className="container">
+        <form>
+          <div className="text-center">
+            <h1 className="h3 mb-3 fw-normal">Cadastro de Categoria</h1>
+          </div>
 
-      <div className="col-12 mb-3">
-        <Input
-          className="form-control"
-          name="name"
-          label="Nome"
-          placeholder="Informe o nome"
-          type="text"
-          value={form.name}
-          onChange={onChange}
-          hasError={errors.name ? true : false}
-          error={errors.name}
-        />
-      </div>
-      {apiError && (
-        <div className="alert alert-danger">
-          Falha ao cadastrar a categoria.
-        </div>
-      )}
-      <div className="text-center">
-        <ButtonWithProgress
-          className="btn btn-primary"
-          onClick={onSubmit}
-          disabled={pendingApiCall ? true : false}
-          pendingApiCall={pendingApiCall}
-          text="Salvar"
-        />
-      </div>
-    </div>
+          <div className="form-floating mb-3">
+            <Input
+              className="form-control"
+              name="name"
+              label="Nome"
+              placeholder="Informe o nome"
+              type="text"
+              value={form.name}
+              onChange={onChange}
+              hasError={errors.name ? true : false}
+              error={errors.name}
+            />
+          </div>
+          {apiError && (
+            <div className="alert alert-danger">
+              Falha ao cadastrar a categoria.
+            </div>
+          )}
+
+          <ButtonWithProgress
+            className="w-100 btn btn-lg btn-primary mb-3"
+            onClick={onSubmit}
+            disabled={pendingApiCall ? true : false}
+            pendingApiCall={pendingApiCall}
+            text="Salvar"
+          />
+        </form>
+      </main>
+    </>
   );
 }

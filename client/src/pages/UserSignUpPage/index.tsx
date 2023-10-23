@@ -59,64 +59,71 @@ export function UserSignupPage() {
   };
 
   return (
-    <div className="container">
-      <h1 className="text-center">Sign Up</h1>
-      <div className="col-12 mb-3">
-        <Input
-          label="Informe seu nome"
-          type="text"
-          className="form-control"
-          placeholder="Informe o seu nome"
-          onChange={onChange}
-          value={form.displayName}
-          name="displayName"
-          error={errors.displayName}
-          hasError={errors.displayName ? true : false}
-        />
-      </div>
+    <>
+      <main className="container">
+        <form>
+          <div className="text-center">
+            <h1 className="h3 mb-3 fw-normal">User Signup Page</h1>
+          </div>
 
-      <div className="col-12 mb-3">
-        <Input
-          label="Informe seu usuário"
-          type="text"
-          className="form-control"
-          placeholder="Informe o seu usuário"
-          onChange={onChange}
-          value={form.username}
-          name="username"
-          error={errors.username}
-          hasError={errors.username ? true : false}
-        />
-      </div>
+          <div className="form-floating mb-3">
+            <Input
+              label="Informe seu nome"
+              type="text"
+              className="form-control"
+              placeholder="Informe o seu nome"
+              onChange={onChange}
+              value={form.displayName}
+              name="displayName"
+              error={errors.displayName}
+              hasError={errors.displayName ? true : false}
+            />
+          </div>
 
-      <div className="col-12 mb-3">
-        <Input
-          label="Informe sua senha"
-          type="password"
-          className="form-control"
-          placeholder="Informe a sua senha"
-          onChange={onChange}
-          value={form.password}
-          name="password"
-          error={errors.password}
-          hasError={errors.password ? true : false}
-        />
-      </div>
+          <div className="form-floating mb-3">
+            <Input
+              label="Informe seu usuário"
+              type="text"
+              className="form-control"
+              placeholder="Informe o seu usuário"
+              onChange={onChange}
+              value={form.username}
+              name="username"
+              error={errors.username}
+              hasError={errors.username ? true : false}
+            />
+          </div>
 
-      <div className="text-center">
-        <ButtonWithProgress
-          disabled={pendingApiCall}
-          className="btn btn-primary"
-          onClick={onClickSignUp}
-          pendingApiCall={pendingApiCall}
-          text="Cadastrar"
-        />
-      </div>
-      <div className="text-center">
-        <Link className="btn btn-outline-secondary" to="/login">
-          Ir para tela de Login
-        </Link>
-      </div>
-    </div>
+          <div className="form-floating mb-3">
+            <Input
+              label="Informe sua senha"
+              type="password"
+              className="form-control"
+              placeholder="Informe a sua senha"
+              onChange={onChange}
+              value={form.password}
+              name="password"
+              error={errors.password}
+              hasError={errors.password ? true : false}
+            />
+          </div>
+
+          <ButtonWithProgress
+            disabled={pendingApiCall}
+            className="w-100 btn btn-lg btn-primary mb-3"
+            onClick={onClickSignUp}
+            pendingApiCall={pendingApiCall}
+            text="Cadastrar"
+          />
+
+          <div className="text-center">
+          <span>Já possui cadastro? </span>
+            <Link className="btn btn-outline-secondary" to="/login">
+              Autenticar-se
+            </Link>
+          </div>
+        </form>
+      </main>
+    </>
   );
 }

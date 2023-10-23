@@ -48,6 +48,7 @@ export function ProductFormPage() {
       .catch((erro) => {
         setApiError("Falha ao carregar a combo de categorias.");
       });
+
     if (id) {
       // ao editar um produto, busca ele no back-end e carrega no objeto form que está no state.
       ProductService.findOne(parseInt(id))
@@ -73,7 +74,7 @@ export function ProductFormPage() {
       setForm((previousForm) => {
         return {
           ...previousForm,
-          category: { id: categories[0].id, name: "" },
+          category: { id: categories[0]?.id, name: "" },
         };
       });
     }
@@ -139,81 +140,89 @@ export function ProductFormPage() {
   };
 
   return (
-    <div className="container">
-      <h1 className="text-center">Cadastro de Produtos</h1>
-      <div className="col-12 mb-3">
-        <Input
-          name="name"
-          label="Name"
-          type="text"
-          className="form-control"
-          placeholder="Informe o nome"
-          value={form.name}
-          onChange={onChange}
-          hasError={errors.name ? true : false}
-          error={errors.name}
-        />
-      </div>
-      <div className="col-12 mb-3">
-        <Input
-          name="price"
-          label="Preço"
-          type="text"
-          className="form-control"
-          placeholder="Informe o preço"
-          value={form.price.toString()}
-          onChange={onChange}
-          hasError={errors.price ? true : false}
-          error={errors.price}
-        />
-      </div>
-      <div className="col-12 mb-3">
-        <label>Descrição</label>
-        <textarea
-          className="form-control"
-          name="description"
-          placeholder="Informe a descrição"
-          value={form.description}
-          onChange={onChange}
-        ></textarea>
-        {errors.description && (
-          <div className="invalid-feedback d-block">{errors.description}</div>
-        )}
-      </div>
-      <div className="col-12 mb-3">
-        <label>Categoria</label>
-        <select
-          className="form-control"
-          name="category"
-          value={form.category.id}
-          onChange={onChangeSelect}
-        >
-          {/* Monta a lista de options do Select de acordo com a lista de categorias vindas do servidor */}
-          {categories.map((category: ICategory) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
-        {errors.category && (
-          <div className="invalid-feedback d-block">{errors.category}</div>
-        )}
-      </div>
-      {apiError && <div className="alert alert-danger">{apiError}</div>}
-      <div className="text-center mb-3">
-        <ButtonWithProgress
-          className="btn btn-primary"
-          onClick={onSubmit}
-          disabled={pendingApiCall ? true : false}
-          pendingApiCall={pendingApiCall}
-          text="Salvar"
-        />
-      </div>
-      <div className="text-center">
-        <Link to="/products" className="nav nav-link">
-          Voltar
-        </Link>
-      </div>
-    </div>
+    <>
+      <main className="container">
+        <form>
+          <div className="text-center">
+            <h1 className="h3 mb-3 fw-normal">Cadastro de Produto</h1>
+          </div>
+          <div className="form-floating mb-3">
+            <Input
+              name="name"
+              label="Nome"
+              type="text"
+              className="form-control"
+              placeholder="Informe o nome"
+              value={form.name}
+              onChange={onChange}
+              hasError={errors.name ? true : false}
+              error={errors.name}
+            />
+          </div>
+          <div className="form-floating mb-3">
+            <Input
+              name="price"
+              label="Preço"
+              type="text"
+              className="form-control"
+              placeholder="Informe o preço"
+              value={form.price.toString()}
+              onChange={onChange}
+              hasError={errors.price ? true : false}
+              error={errors.price}
+            />
+          </div>
+          <div className="form-floating mb-3">
+            <textarea
+              className="form-control"
+              name="description"
+              placeholder="Informe a descrição"
+              value={form.description}
+              onChange={onChange}
+            ></textarea>
+            <label>Descrição</label>
+            {errors.description && (
+              <div className="invalid-feedback d-block">
+                {errors.description}
+              </div>
+            )}
+          </div>
+          <div className="form-floating mb-3">
+            <select
+              className="form-control"
+              name="category"
+              value={form.category.id}
+              onChange={onChangeSelect}
+            >
+              {/* Monta a lista de options do Select de acordo com a lista de categorias vindas do servidor */}
+              {categories.map((category: ICategory) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+            <label>Categoria</label>
+            {errors.category && (
+              <div className="invalid-feedback d-block">{errors.category}</div>
+            )}
+          </div>
+          {apiError && <div className="alert alert-danger">{apiError}</div>}
+          <div className="text-center mb-3">
+            <ButtonWithProgress
+              className="btn btn-primary"
+              onClick={onSubmit}
+              disabled={pendingApiCall ? true : false}
+              pendingApiCall={pendingApiCall}
+              text="Salvar"
+            />
+          </div>
+          <div className="text-center">
+            <Link to="/products" className="nav nav-link">
+              Voltar
+            </Link>
+          </div>
+        </form>
+      </main>
+    </>
   );
 }

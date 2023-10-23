@@ -1,9 +1,9 @@
 import { ChangeEvent, useState } from "react";
-import { Link } from "react-router-dom";
 import { IUserLogin } from "@/commons/interfaces";
 import { ButtonWithProgress } from "@/components/ButtonWithProgress";
 import AuthService from "@/service/AuthService";
 import { Input } from "@/components/Input";
+import { Link, useNavigate } from "react-router-dom";
 
 export function LoginPage() {
   const [form, setForm] = useState({
@@ -12,7 +12,8 @@ export function LoginPage() {
   });
   const [pendingApiCall, setPendingApiCall] = useState(false);
   const [apiError, setApiError] = useState(false);
-
+  const navigate = useNavigate();
+  
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value, name } = event.target;
     setForm((previousForm) => {
@@ -33,9 +34,9 @@ export function LoginPage() {
     AuthService.login(userLogin)
       .then((response) => {
         localStorage.setItem("token", JSON.stringify(response.data.token));
+        localStorage.setItem("user", JSON.stringify(response.data.user));
         setPendingApiCall(false);
-        window.location.reload();
-        console.log(response);
+        navigate("/home");
       })
       .catch((errorResponse) => {
         setApiError(true);
@@ -44,56 +45,61 @@ export function LoginPage() {
       });
   };
   return (
-    <div className="container">
-      <h1 className="text-center">Login</h1>
+    <>
+      <main className="container">
+        <form>
+          <div className="text-center">
+            <h1 className="h3 mb-3 fw-normal">Login</h1>
+          </div>
 
-      <div className="col-12 mb-3">
-        <label></label>
-        <Input
-          label="Informe seu usuário"
-          type="text"
-          className="form-control"
-          placeholder="Informe o seu usuário"
-          onChange={onChange}
-          value={form.username}
-          name="username"
-          error={""}
-          hasError={false}
-        />
-      </div>
+          <div className="form-floating mb-3">
+            <Input
+              label="Informe seu usuário"
+              type="text"
+              className="form-control"
+              placeholder="Informe o seu usuário"
+              onChange={onChange}
+              value={form.username}
+              name="username"
+              error={""}
+              hasError={false}
+            />
+          </div>
 
-      <div className="col-12 mb-3">
-        <Input
-          label="Informe sua senha"
-          type="password"
-          className="form-control"
-          placeholder="Informe a sua senha"
-          onChange={onChange}
-          value={form.password}
-          name="password"
-          error={""}
-          hasError={false}
-        />
-      </div>
+          <div className="form-floating mb-3">
+            <Input
+              label="Informe sua senha"
+              type="password"
+              className="form-control"
+              placeholder="Informe a sua senha"
+              onChange={onChange}
+              value={form.password}
+              name="password"
+              error={""}
+              hasError={false}
+            />
+          </div>
 
-      {apiError && (
-        <div className="alert alert-danger">Falha ao efetuar login</div>
-      )}
+          {apiError && (
+            <div className="alert alert-danger">Falha ao efetuar login</div>
+          )}
 
-      <div className="text-center">
-        <ButtonWithProgress
-          disabled={pendingApiCall}
-          className="btn btn-primary"
-          onClick={onClickLogin}
-          pendingApiCall={pendingApiCall}
-          text="Entrar"
-        />
-      </div>
-      <div className="text-center">
-        <Link className="btn btn-outline-secondary" to="/signup">
-          Cadastrar novo usuário
-        </Link>
-      </div>
-    </div>
+          <ButtonWithProgress
+            disabled={pendingApiCall}
+            className="w-100 btn btn-lg btn-primary mb-3"
+            onClick={onClickLogin}
+            pendingApiCall={pendingApiCall}
+            text="Entrar"
+          />
+
+          <div className="text-center">
+            <span>Não possui cadastro? </span>
+            <Link className="btn btn-outline-secondary" to="/signup">
+              Cadastrar-se
+            </Link>
+          </div>
+        </form>
+      </main>
+    </>
   );
 }

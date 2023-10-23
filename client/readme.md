@@ -79,7 +79,7 @@ export  function App() {
 
 ##### Cadastro de usuários
 
-O próximo passo é iniciar o desenvolvimento dos componentes da aplicação. A aplicação que será desenvolvida irá consumir os recursos da API REST criada nas aulas sobre o lado servidor de uma aplicação Web. Logo o primeiro componente a ser desenvolvido será o cadastro de um novo usuário, para isso criar a pasta **/src/pages/UserSignUpPage**. Na pasta **pages** serão criados todos os componentes que serão renderizados ao usuário. Dentro da pasta **UserSignUpPage** criar o arquivo **index.jsx**, com o seguinte conteúdo  (comentários no código):
+O próximo passo é iniciar o desenvolvimento dos componentes da aplicação. A aplicação que será desenvolvida irá consumir os recursos da API REST criada nas aulas sobre o lado servidor de uma aplicação Web. Logo o primeiro componente a ser desenvolvido será o cadastro de um novo usuário, para isso criar a pasta **/src/pages/UserSignupPage**. Na pasta **pages** serão criados todos os componentes que serão renderizados ao usuário. Dentro da pasta **UserSignupPage** criar o arquivo **index.jsx**, com o seguinte conteúdo  (comentários no código):
 
 ```ts
 /* 
@@ -207,7 +207,7 @@ O código dos arquivos **interfaces** e **AuthService** serão apresentados na s
 }
 ```
 
-O arquivo **AuthService.ts** irá conter as funções para realizar o cadastro e a autenticação na API. Inicialmente será implementada a função **signup** que será responsável por realizar uma requisição HTTP do tipo POST para API. As requisições HTTP serão realizadas utilizando a biblioteca **axios**. Para padronizar a configuração da biblioteca axios foi criado o arquivo **src/lib/axios.ts**, nesse arquivo é configurado a rota base para API, no caso dos testes locais: **http://localhost:8080**.
+O arquivo **AuthService.ts** irá conter as funções para realizar o cadastro e a autenticação na API. Inicialmente será implementada a função **signup** que será responsável por realizar uma requisição HTTP do tipo POST para API. As requisições HTTP serão realizadas utilizando a biblioteca **axios**. Para padronizar a configuração da biblioteca axios foi criado o arquivo **src/lib/axios.ts**, nesse arquivo é configurado a rota base para API, no caso dos testes locais: **http://localhost:8025**.
 
 ```ts
 import { IUserSignUp } from  '../commons/interfaces';
@@ -224,25 +224,25 @@ const AuthService = {
 export  default AuthService;
 ```
 
-O arquivo **axios.ts** possui a configuração da baseURL para que a biblioteca **axios** realize todas as requisições a partir da URL informada, no caso desse projeto: **http://localhost:8080**.
+O arquivo **axios.ts** possui a configuração da baseURL para que a biblioteca **axios** realize todas as requisições a partir da URL informada, no caso desse projeto: **http://localhost:8025**.
 
 ```ts
 import axios from  'axios';
 
 export  const api = axios.create({
-	baseURL: 'http://localhost:8080'
+	baseURL: 'http://localhost:8025'
 });
 ```
-Para testar a funcionalidade criada é necessário adicionar o componente **UserSignUpPage** ao componente **App**, dessa maneira, o arquivo **App.tsx** irá ficar com o seguinte conteúdo:
+Para testar a funcionalidade criada é necessário adicionar o componente **UserSignupPage** ao componente **App**, dessa maneira, o arquivo **App.tsx** irá ficar com o seguinte conteúdo:
 
 ```ts
 import  './App.css'
-import { UserSignUpPage } from './pages/UserSignUpPage'
+import { UserSignupPage } from './pages/UserSignupPage'
 
 export  function App() {
 	return (
 		<div>
-			<UserSignUpPage   />
+			<UserSignupPage   />
 		</div>
 		)
 }
