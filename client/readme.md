@@ -1,4 +1,4 @@
-# React  (back-end)
+# React  (front-end)
 
 ## Introdução
 
@@ -67,7 +67,6 @@ Na mensagem gerada é possível visualizar que a aplicação foi iniciada e est�
 O primeiro passo a ser realizado será alterar o conteúdo dos arquivos **App.tsx** e **App.css**.  O conteúdo do arquivo **App.css** será todo removido, deixando o arquivo em branco. E o arquivo **App.tsx** ficará com o seguinte conteúdo:
 
 ```ts
-import  './App.css'
 export  function App() {
 	return (
 		<div>
@@ -76,10 +75,32 @@ export  function App() {
 	)
 }
 ```
+##### Adicionando o estilo da aplicação (CSS)
+
+Para melhorar a visualização e usabilidade da aplicação será utilizada a bibilioteca CSS **Bootstrap** [10]. O primeiro passo é adicionar a dependência da biblioteca ao projeto, executando o comando:
+
+```cmd
+npm i bootstrap@5.3.2
+```
+Com isso a dependência da biblioteca será adicionada no arquivo `package.json` e o CSS poderá ser importado no arquivo **main.tsx**, que ficará com o seguinte conteúdo:
+
+```jsx
+import React from  'react'
+import ReactDOM from  'react-dom/client'
+import { App } from  './App'
+import  'bootstrap/dist/css/bootstrap.min.css'
+import { BrowserRouter } from  'react-router-dom';
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+	<React.StrictMode>
+		<App  />
+	</React.StrictMode>
+)
+```
+A linha `import  'bootstrap/dist/css/bootstrap.min.css'` irá permitir que todos os componentes da árvore possam utilizar as classes CSS presentes na biblioteca Bootstrap.
 
 ##### Cadastro de usuários
 
-O próximo passo é iniciar o desenvolvimento dos componentes da aplicação. A aplicação que será desenvolvida irá consumir os recursos da API REST criada nas aulas sobre o lado servidor de uma aplicação Web. Logo o primeiro componente a ser desenvolvido será o cadastro de um novo usuário, para isso criar a pasta **/src/pages/UserSignupPage**. Na pasta **pages** serão criados todos os componentes que serão renderizados ao usuário. Dentro da pasta **UserSignupPage** criar o arquivo **index.jsx**, com o seguinte conteúdo  (comentários no código):
+O próximo passo é iniciar o desenvolvimento dos componentes da aplicação. A aplicação que será desenvolvida irá consumir os recursos da API REST criada nas aulas sobre o lado servidor de uma aplicação Web. Logo o primeiro componente a ser desenvolvido será o cadastro de um novo usuário, para isso criar a pasta **/src/pages/UserSignUpPage**. Na pasta **pages** serão criados todos os componentes que serão renderizados ao usuário. Dentro da pasta **UserSignUpPage** criar o arquivo **index.tsx**, com o seguinte conteúdo  (comentários no código):
 
 ```ts
 /* 
@@ -92,7 +113,7 @@ import { ChangeEvent, useState } from  'react'
 import { IUserSignUp } from  '../../commons/interfaces';
 import AuthService from  '../../service/AuthService';
 
-export  function UserSignupPage() {
+export  function UserSignUpPage() {
 	/* Criação de um objeto chamado `form` no state para armazenar o username e passord do usuário */
 	const [form, setForm] = useState({
 		displayName: '',
@@ -149,10 +170,13 @@ export  function UserSignupPage() {
 	}
 	/*Retorna o TSX com o formulário de cadastro. */
 	return (
-		<div  className="container">
-			<h1  className="text-center">Sign Up</h1>
-			<div  className="col-12 mb-3">
-				<label>Informe seu nome</label>
+		<>
+		<main  className="container">
+		<form>
+			<div  className="text-center">
+				<h1  className="h3 mb-3 fw-normal">User Signup Page</h1>
+			</div>
+			<div  className="form-floating mb-3">
 				{/*input utilizado para informar o nome do usuário. Nos atributos onChange e value são informados o método que trata a atualização do state e a ligação com o valor armazenado no state, respectivamente.*/}
 				<input 
 					type="text"
@@ -162,10 +186,10 @@ export  function UserSignupPage() {
 					value={form.displayName}
 					name="displayName"
 				/>
+				<label>Nome</label>
 				{errors.displayName && <div  className="invalid-feedback">{errors.displayName}</div>}
 			</div>
-			<div  className="col-12 mb-3">
-				<label>Informe seu usuário</label>
+			<div  className="form-floating mb-3">
 				<input
 					type="text"
 					className="form-control"
@@ -174,9 +198,10 @@ export  function UserSignupPage() {
 					value={form.username}
 					name="username"
 				/>
+				<label>Usuário</label>
+				{errors.username && <div  className="invalid-feedback">{errors.username}</div>}
 			</div>
 			<div  className="col-12 mb-3">
-				<label>Informe sua senha</label>
 				<input
 					type="password"
 					className="form-control"
@@ -185,6 +210,8 @@ export  function UserSignupPage() {
 					value={form.password}
 					name="password"  
 				/>
+				<label>Senha</label>
+				{errors.password&& <div  className="invalid-feedback">{errors.password}</div>}
 			</div>
 			<div  className="text-center">
 				{/* Ao clicar no botão é chamado o método onClickSignUp */}
@@ -207,7 +234,7 @@ O código dos arquivos **interfaces** e **AuthService** serão apresentados na s
 }
 ```
 
-O arquivo **AuthService.ts** irá conter as funções para realizar o cadastro e a autenticação na API. Inicialmente será implementada a função **signup** que será responsável por realizar uma requisição HTTP do tipo POST para API. As requisições HTTP serão realizadas utilizando a biblioteca **axios**. Para padronizar a configuração da biblioteca axios foi criado o arquivo **src/lib/axios.ts**, nesse arquivo é configurado a rota base para API, no caso dos testes locais: **http://localhost:8025**.
+O arquivo **AuthService.ts** irá conter as funções para realizar o cadastro e a autenticação na API. Inicialmente será implementada a função **signup** que será responsável por realizar uma requisição HTTP do tipo POST para API. As requisições HTTP serão realizadas utilizando a biblioteca **axios**. Para padronizar a configuração da biblioteca **axios** foi criado o arquivo **src/lib/axios.ts**, nesse arquivo é configurado a rota base para API, no caso dos testes locais: **http://localhost:8025**.
 
 ```ts
 import { IUserSignUp } from  '../commons/interfaces';
@@ -233,21 +260,21 @@ export  const api = axios.create({
 	baseURL: 'http://localhost:8025'
 });
 ```
-Para testar a funcionalidade criada é necessário adicionar o componente **UserSignupPage** ao componente **App**, dessa maneira, o arquivo **App.tsx** irá ficar com o seguinte conteúdo:
+Para testar a funcionalidade criada é necessário adicionar o componente **UserSignUpPage** ao componente **App**, dessa maneira, o arquivo **App.tsx** irá ficar com o seguinte conteúdo:
 
 ```ts
-import  './App.css'
-import { UserSignupPage } from './pages/UserSignupPage'
+import { UserSignUpPage} from './pages/UserSignUpPage'
 
 export  function App() {
 	return (
 		<div>
-			<UserSignupPage   />
+			<UserSignUpPage />
 		</div>
 		)
 }
 ```
 
+Após esse passo será possível acessar a URL da aplicação no endereço: **http://127.0.0.1:5173/**  ou **http://localhost:5173/** e testar a funcionalidade de cadastro de usuário. Lembrando que para o cadastro funcionar, devemos executar antes do cliente a API REST desenvolvida no projeto da pasta **server**.
 
 ##### Autenticação
 
@@ -290,10 +317,13 @@ export  function LoginPage() {
 		);
 	};
 	return (
-		<div  className="container">
-			<h1  className="text-center">Login</h1>
-			<div  className="col-12 mb-3">
-				<label>Informe seu usuário</label>
+		<>
+		  <main className="container">
+		    <form>
+		      <div className="text-center">
+		        <h1 className="h3 mb-3 fw-normal">Login</h1>
+		      </div>
+	          <div className="form-floating mb-3">
 				<input
 					type="text"
 					className="form-control"
@@ -302,9 +332,9 @@ export  function LoginPage() {
 					value={form.username}
 					name="username"
 				/>
+				<label>Usuário</label>
 			</div>
-			<div  className="col-12 mb-3">
-				<label>Informe sua senha</label>
+            <div className="form-floating mb-3">
 				<input
 					type="password"
 					className="form-control"
@@ -313,6 +343,7 @@ export  function LoginPage() {
 					value={form.password}
 					name="password"
 				/>
+				<label>Senha</label>
 			</div>
 			<div  className="text-center">
 				<button
@@ -340,7 +371,7 @@ export  interface  IUserLogin {
 	password: string;
 }
 ```
-
+Agora é possível criar a função login no arquivo **AuthService.ts**.
 ```ts
 import { IUserLogin, IUserSignUp } from  '../commons/interfaces';
 import { api } from  '../lib/axios'
@@ -377,6 +408,44 @@ Para testar o componente de **Login** basta informar o **username** e **password
 
 O código ainda está bem básico, será necessário adicionar mensagens de erro e sucesso e também criar uma maneira de navegar entre os diferentes componentes do sistema e, essa será o próximo conteúdo a ser abordado.
 
+Pode-se observar que foi necessário trocar o componente UserSignUpPage pelo componente LoginPage, a outra opção seria exibir ambos na tela. Essa não é a situação ideal, a melhor opção seria abrir a tela de autenticação, caso o usuário não tenha um cadastro ele clica em um botão para cadastrar-se e depois do cadastro efetuado o usuário é direcionado para página de autenticação. Para tornar esse comportamento possível na sequência do texto será apresentada a adição de rotas na aplicação.
+
+##### Melhorando as referências de caminho dos componentes
+
+Um dos problemas que geralmente acontecem em aplicações que possuem um grande número de componentes é a dificuldade de gerenciar a importação dos componentes nos diferentes módulos da aplicação, isso devido à estrutura de diretórios, dependendo de onde está o componente é comum termos que importar ele voltando pastas (por exemplo: `../../` volta dois diretórios). Para resolver esse problema, podemos tratar a pasta `src` como sendo raiz da aplicação e importar todos os componentes a partir da raiz independente do nível do diretório. Para isso será necessário adicionar a dependência de desenvolvimento `@types/node`:
+```cmd
+npm i @types/node -D
+```
+Depois é necessário modificar o arquivo `vite.config.ts`, que ficará com o seguinte conteúdo:
+```ts
+import path from 'path'
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
+  }
+})
+```
+E, por fim, basta alterar o arquivo `tsconfig,json`, dentro da propriedade `compilerOptions`, adicionar:
+```json
+{
+	"compilerOptions": {
+	...
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"]
+		},
+	}...
+},
+```
+Com isso para importar qualquer componente, basta adicionar `@/caminho`, por exemplo: `import { App } from  '@/App'` importa o componente **App**.
+
 ##### Controle de Rotas
 
 Para controlar as rotas será utilizada a biblioteca React Router [5]. Inicialmente é necessário adicionar a dependência ao projeto utilizando o **npm**, basta abrir um terminal na pasta do projeto e executar:
@@ -389,8 +458,8 @@ Com o React Router instalado o próximo passo é configurar as rotas da aplicaç
 ```ts
 import  React  from  'react'
 import  ReactDOM  from  'react-dom/client'
-import { App } from  './App'
-import  './index.css'
+import { App } from  '@/App'
+import  'bootstrap/dist/css/bootstrap.min.css'
 import { BrowserRouter } from  'react-router-dom';
 
 ReactDOM.createRoot(document.getElementById('root') as  HTMLElement).render(
@@ -402,22 +471,37 @@ ReactDOM.createRoot(document.getElementById('root') as  HTMLElement).render(
 )
 ```
 
-Então, será criada uma pasta chamada **routes** e dentro três pastas **BaseRoutes**, **SignRoutes** e **AuthenticatedRoutes**, cada uma delas com um arquivo **index.tsx**.
+Então, será criada uma pasta chamada **routes** e dentro três pastas **BaseRoutes** e **AuthenticatedRoutes**, cada uma delas com um arquivo **index.tsx**.
 
-O componente **BaseRoutes** vai ser o ponto de entrada dos usuários e, caso o usuário não esteja autenticado ele será direcionado para o componente **SignRoutes** que irá conter as rotas para o cadastro e autenticação de usuários.
+O componente **BaseRoutes** vai ser o ponto de entrada dos usuários e, caso o usuário esteja autenticado ele será validado pelo componente **AuthenticatedRoutes** que irá fazer o *render* do menu de navegação e do componente solicitado. O componente **BaseRoutes** contém tanto as rotas em que o usuário não necessita estar autenticado quanto as que o usuário precisa estar autenticado.
 
-```ts
-import  AuthService  from  '../../service/AuthService';
-import { AuthenticatedRoutes } from  '../AuthenticatedRoutes';
-import { SignRoutes } from  '../SignRoutes';
+```jsx
+import { Route, Routes } from "react-router-dom";
+import { LoginPage } from "@/pages/LoginPage";
+import { UserSignupPage } from "@/pages/UserSignupPage";
+import { AuthenticatedRoutes } from "../AuthenticatedRoutes";
+import { HomePage } from "@/pages/HomePage";
 
-export  function  BaseRoutes() {
-	const  isAuthenticated = AuthService.isAuthenticated();
-	return  isAuthenticated ? <AuthenticatedRoutes  /> : <SignRoutes  />;
+export function BaseRoutes() {
+  return (
+    <>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<UserSignupPage />} />
+
+        {/* Protected Routes */}
+        <Route element={<AuthenticatedRoutes />}>
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/" element={<HomePage />} />
+        </Route>
+      </Routes>
+    </>
+  );
 }
 ```
 
-No **BaseRoutes** é verificado se o usuário está autenticado por meio da função **isAuthenticated()** do **AuthService**. A função apresentada abaixo utiliza o token *JWT* vindo da **API** no momento da autenticação. Durante o processo de autenticação o token é adicionado no `localStorage` e nesse momento recuperado para verificar se o usuário autenticou-se. Na sequência será apresentado o código modificado no componente **LoginPage** para que o token seja adicionado no `localStorage`. Na função **isAuthenticaded** está sendo adicionado o token nas configurações das requisições realizadas por meio do **axios**, no código `api.defaults.headers.common['Authorization'] = Bearer ${JSON.parse(token)};`, o token será adicionado ao cabeçalho, com isso, toda requisição HTTP enviará o token para o servidor.
+Caso a rota solicitada seja para cadastrar-se ou autenticar-se, será exibido o respectivo componente ao usuário. Agora, caso a rota que o usuário deseja acessar necessite de autenticação, ela será tratada no componente **AuthenticatedRoutes **, em que é verificado se o usuário está autenticado por meio da função **isAuthenticated()** do **AuthService**. A função apresentada abaixo utiliza o token *JWT* vindo da **API** no momento da autenticação. Durante o processo de autenticação o **token** é adicionado no `localStorage` e nesse momento recuperado para verificar se o usuário autenticou-se. Na sequência será apresentado o código modificado no componente **LoginPage** para que o token seja adicionado no `localStorage`. Na função **isAuthenticaded** está sendo adicionado o token nas configurações das requisições realizadas por meio do **axios**, no código `api.defaults.headers.common['Authorization'] = Bearer ${JSON.parse(token)};`, o **token** será adicionado ao cabeçalho, com isso, toda requisição HTTP enviará o **token** para o servidor. Função *isAuthenticated()* do **AuthService**:
 
 ```ts
 const  isAuthenticated = () => {
@@ -428,82 +512,145 @@ const  isAuthenticated = () => {
 	return  token ? true : false;
 }
 ```
-Foi modificado apenas a função  **onClickLogin** do componente **LoginPage** agora é possível realizar a autenticação, armazenar o token recebido no localStorage e então redirecionar o usuário para o componente com as rotas autenticadas.
+No código abaixo será modificada apenas a função  **onClickLogin** do componente **LoginPage**. Agora é possível realizar a autenticação, armazenar o **token** recebido no **localStorage** e então redirecionar o usuário para o componente com as rotas autenticadas.
 
 ```ts
+//...
+import { Link, useNavigate } from  "react-router-dom"
+//...
+
+export  function LoginPage() {
+	//...
+	const navigate = useNavigate();
+	//...
+	
 	const  onClickLogin = () => {
 		setPendingApiCall(true);
 		const  userLogin: IUserLogin = {
 			username:  form.username,
 			password:  form.password,
 		};
-		AuthService.login(userLogin)
-			.then((response) => {
-				localStorage.setItem("token", JSON.stringify(response.data.token));
-				setPendingApiCall(false);
-				window.location.reload();
+		AuthService.login(userLogin).then((response) => {
+			localStorage.setItem("token", JSON.stringify(response.data.token));
+			localStorage.setItem("user", JSON.stringify(response.data.user));
+			setPendingApiCall(false);
+			navigate("/home");
 			})
 			.catch((errorResponse) => {
 				setApiError(true);
 				setPendingApiCall(false);
 			});
-
-};
-```
-
-O componente **SignRoutes** contém as rotas em que o usuário não necessita estar autenticado. Nesse componente é iniciado o uso do React Router Dom por meio dos componentes **Routes** e **Route**. O **Routes** irá abrigar um conjunto de rotas e para cada componente que será apresentado para o usuário será criado uma rota por meio do componente **Route**. Esse, por sua vez, necessita de um atributo **path** que contém o caminho da rota, ou seja, a URL que será informada no navegador ao solicitar o novo componente e, o atributo **element** que contém o componente que será apresentado para o usuário. No código abaixo, a URL **/signup** por exemplo, irá apresentar o componente **UserSignupPage** ao usuário. Já a URL **/** ou qualquer outra rota, por causa do código: `<Route  path="*"  element={<LoginPage  />}  />` irá apresentar ao usuário o componente **LoginPage**.
-
-```ts
-import { Routes, Route } from  'react-router-dom';
-import { LoginPage } from  '../../pages/LoginPage';
-import { UserSignupPage } from  '../../pages/UserSignUpPage';
-
-export  function  SignRoutes() {
-
+		//...
 	return (
-		<Routes>
-			<Route  path="/"  element={<LoginPage  />}  />
-			<Route  path="/signup"  element={<UserSignupPage  />}  />
-			<Route  path="*"  element={<LoginPage  />}  />
-		</Routes>
-	)
+		//... Depois do botão de autenticação:
+          <div className="text-center">
+            <span>Não possui cadastro? </span>
+            <Link className="btn btn-outline-secondary" to="/signup">
+              Cadastrar-se
+            </Link>
+          </div>
+        </form>
+      </main>
+    </>
+  );
 }
 ```
+O componente **AuthenticatedRoutes** faz o render do componente **NavBar** que adiciona uma barra de navegação na página principal e, o `Outlet` que será responsável por fazer o render do componente de acordo com a rota selecionada pelo usuário. A primeira rota (`/`) que necessita de autenticação será o caminho para o componente **HomePage**, que será apresentado na sequência.
 
-O componente **AuthenticatedRoutes** irá  contém as rotas em que o usuário necessita estar autenticado. Nesse caso apenas o componente **HomePage**, o qual será apresentado na sequência do código.
+O componente **NavBar**  apresenta o link de acesso a cada um dos componentes de lista de dados que será criado. Inicialmente estará funcionando apenas o link para HomePage,. As rotas são apresentadas no menu por meio do componente **NavLink** do **React Router**, esse componente permite alterar a classe para o link que está ativo, assim alterando a cor do menu para a rota selecionada pelo usuário. O componente também conta com o botão de Sair, que ao ser clicado será limpado o valor do token do localstorage e o usuário será direcionado para tela de autenticação (LoginPage).
 
-```ts
-import { Routes, Route } from  'react-router-dom'
-import { HomePage } from  '../../pages/HomePage'
+```jsx
+import { Link, NavLink } from  "react-router-dom";
+import logo from  "@/assets/utfpr-logo.png";
+import AuthService from  "@/service/AuthService";
+ 
+export  function NavBar() {
+	const onClickLogout = () => {
+		AuthService.logout();
+		window.location.reload();
+	};
 
-export  function  AuthenticatedRoutes() {
-	return (
-		<Routes>
-			<Route  path="/"  element={<HomePage  />}  />
-			<Route  path="*"  element={<HomePage  />}  />
-		</Routes>
-	)
+return (
+	<div  className="bg-white shadow-sm mb-2">
+		<div  className="container">
+			<nav  className="navbar navbar-light navbar-expand">
+				<Link  to="/"  className="navbar-brand">
+					<img  src={logo}  width="60"  alt="UTFPR"  />
+				</Link>
+				<ul  className="navbar-nav me-auto mb-2 mb-md-0">
+					<li  className="nav-item">
+						<NavLink  to="/" 
+							className={(navData) => navData.isActive ? "nav-link active" : "nav-link"}> Home
+						</NavLink>
+					</li>
+					<li  className="nav-item">
+						<NavLink to="/categories"
+							className={(navData) => navData.isActive ? "nav-link active" : "nav-link"}>Categorias
+						</NavLink>
+					</li>
+					<li  className="nav-item">
+						<NavLink to="/products"
+							className={(navData) => navData.isActive ? "nav-link active" : "nav-link"}>Produtos
+						</NavLink>
+					</li>
+					<li  className="nav-item">
+						<NavLink to="/product-v2"
+							className={(navData) =>navData.isActive ? "nav-link active" : "nav-link"}>Produtos V2
+						</NavLink>
+					</li>
+					<li  className="nav-item">
+						<button  className="btn btn-light"  onClick={onClickLogout}>&times; Sair
+						</button>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	);
 }
 ```
+Componente **HomePage**:
+```jsx
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import AuthService from "@/service/AuthService";
+import { NavBar } from "@/components/NavBar";
 
+export function AuthenticatedRoutes() {
+  const isAuthenticated = AuthService.isAuthenticated();
+  const location = useLocation();
+  
+  return isAuthenticated ? (
+    <>
+      <NavBar />
+      <Outlet />
+    </>
+  ) : (
+    <Navigate to="/login" state={{ from: location }} replace />
+  );
+}
+```
 Dentro da pasta **pages** será criada a pasta **HomePage** com o arquivo **index.tsx**.
 
-```ts
-export  function  HomePage() {
-	return (
-		<div  className="container">
-			<h1>Bem vindo!</h1>
-		</div>
-	)
+```jsx
+export function HomePage() {
+  return (
+    <>
+      <main className="container">
+        <div className="text-center">
+          <h1 className="h3 mb-3 fw-normal">HOME PAGE</h1>
+        </div>
+      </main>
+    </>
+  );
 }
 ```
 ##### CRUD de Categorias
 
-Com o cadastro de usuário e tela de autenticação funcionando serão adicionadas as operações CRUD de categoria. Inicialmente será criado o service de categoria dentro da pasta **service** criar o arquivo **CategoryService.ts**. Esse service vai ter as funções **save, 	findAll, remove e	findById**, todas utilizam o **axios** por meio do objeto **api**. Todas essas requisições necessitam de autenticação, entretanto, como o token já foi adicionado ao cabeçalho das requisições na função **isAuthenticaded**, não é necessário fazer isso novamente. 
+Com o cadastro de usuário e tela de autenticação funcionando serão adicionadas as operações CRUD de categoria. Inicialmente será criado o service de categoria dentro da pasta **service** criar o arquivo **CategoryService.ts**. Esse service vai ter as funções **save, 	findAll, remove e	findById**, todas utilizam o **axios** por meio do objeto **api**. Todas essas requisições necessitam de autenticação, entretanto, como o **token jwt** já foi adicionado ao cabeçalho das requisições na função **isAuthenticaded**, não é necessário fazer isso novamente. 
 
 ```ts
-import { ICategory } from  '../commons/interfaces';
-import { api } from  '../lib/axios'
+import { ICategory } from  '@/commons/interfaces';
+import { api } from  '@/lib/axios'
 
 const  save = (category: ICategory) => {
 	return  api.post('/categories', category);
@@ -540,8 +687,8 @@ Agora será criado o componente para listar as categorias, dentro da pasta **pag
 ```ts
 import { useEffect, useState } from  'react';
 import { Link } from  'react-router-dom';
-import { ICategory } from  '../../commons/interfaces';
-import  CategoryService  from  '../../service/CategoryService';
+import { ICategory } from  '@/commons/interfaces';
+import  CategoryService  from  '@/service/CategoryService';
 
 export  function  CategoryListPage() {
 	const [data, setData] = useState<ICategory[]>([]);
@@ -619,71 +766,33 @@ export  function  CategoryListPage() {
 }
 ```
 
-Por fim, para exibir o componente **CategoryListPage** será adicionada a rota no arquivo **AuthenticatedRoutes**. E também será criado um menu por meio do componente **NavBar** que será exibido na sequência. O NavBar foi criado dentro da pasta components.
+Por fim, para exibir o componente **CategoryListPage** será adicionada a rota no arquivo **BaseRoutes**. Agora o link presente no componente **NavBar** estará funcionando, bastando clicar no atalho o componente de lista de categorias será exibido.
 
-```ts
-import { Routes, Route } from  'react-router-dom'
-import { HomePage } from  '../../pages/HomePage'
+```jsx
+import { Route, Routes } from "react-router-dom";
+import { LoginPage } from "@/pages/LoginPage";
+import { UserSignupPage } from "@/pages/UserSignupPage";
+import { AuthenticatedRoutes } from "../AuthenticatedRoutes";
+import { HomePage } from "@/pages/HomePage";
+import { CategoryListPage } from "@/pages/CategoryListPage";
 
-export  function  AuthenticatedRoutes() {
-	return (
-		<Routes>
-			<Route  path="/"  element={<HomePage  />}  />
-			<Route  path="/categories"  element={<CategoryListPage  />}  />
-			<Route  path="*"  element={<HomePage  />}  />
-		</Routes>
-	)
-}
-```
-O componente **NavBar**  apresenta o link de acesso a cada um dos componentes de lista de dados que será criado. Inicialmente foi criado apenas a lista de categorias, os demais links irão redirecionar para o componente Home, por enquanto. As rotas são apresentadas no menu por meio do componente **NavLink** do **React Router**, esse componente permite alterar a classe para o link que está ativo, assim alterando a cor do menu para a rota selecionada pelo usuário. O componente também conta com o botão de Sair, que ao ser clicado será limpado o valor do token do local storage e o usuário será direcionado para tela de autenticação (LoginPage).
-```ts
-import { Link, NavLink } from  "react-router-dom";
-import logo from  "../../assets/utfpr-logo.png";
-import AuthService from  "../../service/AuthService";
- 
-export  function NavBar() {
-	const onClickLogout = () => {
-		AuthService.logout();
-		window.location.reload();
-	};
+export function BaseRoutes() {
+  return (
+    <>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<UserSignupPage />} />
 
-return (
-	<div  className="bg-white shadow-sm mb-2">
-		<div  className="container">
-			<nav  className="navbar navbar-light navbar-expand">
-				<Link  to="/"  className="navbar-brand">
-					<img  src={logo}  width="60"  alt="UTFPR"  />
-				</Link>
-				<ul  className="navbar-nav me-auto mb-2 mb-md-0">
-					<li  className="nav-item">
-						<NavLink  to="/" 
-							className={(navData) => navData.isActive ? "nav-link active" : "nav-link"}> Home
-						</NavLink>
-					</li>
-					<li  className="nav-item">
-						<NavLink to="/categories"
-							className={(navData) => navData.isActive ? "nav-link active" : "nav-link"}>Categorias
-						</NavLink>
-					</li>
-					<li  className="nav-item">
-						<NavLink to="/products"
-							className={(navData) => navData.isActive ? "nav-link active" : "nav-link"}>Produtos
-						</NavLink>
-					</li>
-					<li  className="nav-item">
-						<NavLink to="/product-v2"
-							className={(navData) =>navData.isActive ? "nav-link active" : "nav-link"}>Produtos V2
-						</NavLink>
-					</li>
-					<li  className="nav-item">
-						<button  className="btn btn-light"  onClick={onClickLogout}>&times; Sair
-						</button>
-					</li>
-				</ul>
-			</nav>
-		</div>
-	</div>
-	);
+        {/* Protected Routes */}
+        <Route element={<AuthenticatedRoutes />}>
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/categories" element={<CategoryListPage />} />
+        </Route>
+      </Routes>
+    </>
+  );
 }
 ```
 Ao clicar no link que aponta para o componente de Categorias, será exibido o componente CategoryListPage, entretanto como não foi cadastrada nenhuma categoria, a tabela será exibida sem nenhum item. Para criar uma categoria será criado o componente **CategoryFormPage**, para isso criar a pasta **CategoryFormPage** dentro da pasta **pages** e dentro o arquivo **index.tsx**.
@@ -691,10 +800,10 @@ Ao clicar no link que aponta para o componente de Categorias, será exibido o co
 ```ts
 import { ChangeEvent, useEffect, useState } from  'react';
 import { useNavigate, useParams } from  'react-router-dom';
-import { ICategory } from  '../../commons/interfaces';
-import { ButtonWithProgress } from  '../../components/ButtonWithProgress';
-import { Input } from  '../../components/Input';
-import CategoryService from  '../../service/CategoryService';
+import { ICategory } from  '@/commons/interfaces';
+import { ButtonWithProgress } from  '@/components/ButtonWithProgress';
+import { Input } from  '@/components/Input';
+import CategoryService from  '@/service/CategoryService';
 
 export  function CategoryFormPage() {
 	// Adiciona o objeto que irá armazenar a categoria no state
@@ -772,9 +881,14 @@ export  function CategoryFormPage() {
 		);
 	}
 	return (
-		<div  className="container">
-			<h1  className="text-center">Cadastro de Categoria</h1>
-			<div  className="col-12 mb-3">
+	    <>
+	      <main className="container">
+	        <form>
+	          <div className="text-center">
+	            <h1 className="h3 mb-3 fw-normal">Cadastro de Categoria</h1>
+	          </div>
+
+	          <div className="form-floating mb-3">
 				<Input
 					className="form-control"
 					name="name"
@@ -787,18 +901,18 @@ export  function CategoryFormPage() {
 					error={errors.name}
 				/>
 			</div>
-			{apiError && <div  className="alert alert-danger">Falha ao cadastrar a categoria.</div>}
-			<div  className="text-center">			
-				<ButtonWithProgress
-					className="btn btn-primary"
-					onClick={onSubmit}
-					disabled={pendingApiCall ? true : false}
-					pendingApiCall={pendingApiCall}
-					text="Salvar"
-				/>
-			</div>
-		</div>
-	)
+			{apiError && <div  className="alert alert-danger">Falha ao cadastrar a categoria.</div>}		
+			<ButtonWithProgress
+				className="btn btn-primary"
+				onClick={onSubmit}
+				disabled={pendingApiCall ? true : false}
+				pendingApiCall={pendingApiCall}
+				text="Salvar"
+			/>
+		</form>
+	</main>
+</>
+)
 }
 ```
 
@@ -829,13 +943,12 @@ Depois de intalar o Chakra UI, é necessário adicionar o `ChakraProvider` na ra
 
 ```ts
 import { ChakraProvider } from  '@chakra-ui/react'
-import  './App.css'
 import { BaseRoutes } from  './routes/BaseRoutes'
 
 export  function App() {
 	return (
 		<ChakraProvider>
-		<BaseRoutes  />
+			<BaseRoutes  />
 		</ChakraProvider>
 	)
 }
@@ -847,10 +960,10 @@ O processo para busca dos dados, por meio do **ProductService** e de criação d
 ```ts
 import { useState, useEffect } from  "react";
 import { Link, useNavigate } from  "react-router-dom";
-import ProductService from  "../../service/ProductService";
+import ProductService from  "@/service/ProductService";
 import {Table,Thead,Tbody,Tfoot,Tr,Th,Td,TableCaption,TableContainer,Menu,MenuButton,MenuList,MenuItem,IconButton,} from  "@chakra-ui/react";
 import {BsThreeDotsVertical,BsPencilSquare,BsTrash,BsPlusCircle,} from  "react-icons/bs";
-import { IProduct } from  "../../commons/interfaces";
+import { IProduct } from  "@/commons/interfaces";
 
 export  function ProductListPageV2() {
 	const [data, setData] = useState<IProduct[]>([]);
@@ -1154,3 +1267,5 @@ export function ProductFormPageV2() {
 [8] Chakra UI. Disponível em: https://chakra-ui.com/
 
 [9] React Icons. Disponível em: https://react-icons.github.io/react-icons/
+
+[10] Bootstrap. Disponível em: https://getbootstrap.com/
